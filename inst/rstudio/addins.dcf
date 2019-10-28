@@ -1,0 +1,9 @@
+Name: Initialize dbgit reposiory
+Description: This function allow to configure a folder to be used as sync repository with databricks
+Binding: dbgit_init_ui
+Interactive: true
+
+Name: Pull a directory from databricks
+Description: This function allow you to sync pulling a folder FROM databricks TO local git folder
+Binding: dbgit_pull
+Interactive: true
