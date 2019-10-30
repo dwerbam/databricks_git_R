@@ -16,9 +16,6 @@ cli_install <- function() {
     cfgpath=file.path(Sys.getenv("HOME"),'.databrickscfg')
     if(!file.exists(cfgpath)) stop(paste('Cannot find databricks configuration file in ', cfgpath))
 
-    gitpath=file.path(Sys.getenv("HOME"),'.gitconfig')
-    if(!file.exists(gitpath)) stop(paste('Cannot find GIT configuration file in ', gitpath))
-
 }
 #cli_install()
 
@@ -63,6 +60,10 @@ get_env <- function() {
 
 dbgit_init <- function(wksp_folder) {
     print(wksp_folder)
+
+    gitpath=file.path(Sys.getenv("HOME"),'.gitconfig')
+    if(!file.exists(gitpath)) stop(paste('Cannot find GIT configuration file in ', gitpath))
+
     out <- run("git", args = c("init"))
     write(wksp_folder, dbgit_wksp_file)
     out <- run("git", args = c("add", dbgit_wksp_file))
