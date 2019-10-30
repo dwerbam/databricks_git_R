@@ -12,6 +12,13 @@ dbgit_wksp_file <- ".databricks"
 
 cli_install <- function() {
     run("pip", args=c("install", "--upgrade", "databricks-cli"))
+
+    cfgpath=file.path(Sys.getenv("HOME"),'.databrickscfg')
+    if(!file.exists(cfgpath)) stop(paste('Cannot find databricks configuration file in ', cfgpath))
+
+    gitpath=file.path(Sys.getenv("HOME"),'.gitconfig')
+    if(!file.exists(gitpath)) stop(paste('Cannot find GIT configuration file in ', gitpath))
+
 }
 #cli_install()
 
