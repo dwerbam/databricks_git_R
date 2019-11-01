@@ -1,9 +1,19 @@
 Name: Initialize dbgit reposiory
 Description: This function allow to configure a folder to be used as sync repository with databricks
-Binding: dbgit_init_ui
+Binding: dbgit_init
 Interactive: true
 
 Name: Pull a directory from databricks
 Description: This function allow you to sync pulling a folder FROM databricks TO local git folder
 Binding: dbgit_pull
+Interactive: true
+
+Name: Push a directory to databricks
+Description: This function allow you to sync pushing a local git folder TO databricks
+Binding: dbgit_push
+Interactive: true
+
+Name: Push a file to databricks
+Description: This function allow you to sync pushing a local git file TO databricks
+Binding: dbgit_pushfile
 Interactive: true

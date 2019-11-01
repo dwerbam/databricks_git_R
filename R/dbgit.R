@@ -70,7 +70,8 @@ pjoin <- function(...) return(gsub('//', '/', file.path(...)))
 #'
 #' export
 
-dbgit_init <- function(wksp_folder) {
+dbgit_init <- function(wksp_folder=NULL) {
+    if(is.null(wksp_folder)) wksp_folder <- readline("Please, enter databricks workspace folder:")
     print(wksp_folder)
 
     gitpath=file.path(Sys.getenv("HOME"),'.gitconfig')
@@ -83,31 +84,6 @@ dbgit_init <- function(wksp_folder) {
     print(paste("dbgit_init executed for workspace location",wksp_folder))
 }
 
-#' Initialize dbgit reposiory using rstudio addins
-#'
-#' This function allow to configure a folder to be used as sync repository with databricks, asking from the ui the specific path
-#'
-#' export
-
-dbgit_init_ui <- function() {
-    ui <- miniPage(
-        gadgetTitleBar("dbgit init"),
-        miniContentPanel(
-            textInput("wksp","Databricks workspace path:")
-        )
-    )
-    server <- function(input, output) {
-        observeEvent(input$done, {
-            dbgit_init(input$wksp)
-            stopApp()
-        })
-        observeEvent(input$cancel, {
-            stopApp(stop("No workspace specified.", call. = FALSE))
-        })
-    }
-    runGadget(ui, server, viewer=dialogViewer("Workspace",height = 200))
-}
-#dbgit_init_ui()
 
 #' Pull a directory from databricks
 #'
@@ -178,7 +154,6 @@ dbgit_pushfile <- function(filename, overwrite=FALSE) {
         TRUE ~ "unknown"
     )
 
-    print(env)
     out <- runit("databricks",
                args = remove_empty(
                    c("workspace" ,
