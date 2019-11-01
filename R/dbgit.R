@@ -70,8 +70,8 @@ pjoin <- function(...) return(gsub('//', '/', file.path(...)))
 #'
 #' export
 
-dbgit_init <- function(wksp_folder=NULL) {
-    if(is.null(wksp_folder)) wksp_folder <- readline("Please, enter databricks workspace folder:")
+dbgit_init <- function(wksp_folder="") {
+    if(wksp_folder=="") wksp_folder <- readline("Please, enter databricks workspace folder:")
     print(wksp_folder)
 
     gitpath=file.path(Sys.getenv("HOME"),'.gitconfig')
