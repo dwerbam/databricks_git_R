@@ -9,9 +9,7 @@ dbgit_pushfile(filename, overwrite = FALSE)
 \arguments{
 \item{filename}{indicating the filename to upload to databricks.}
 
-\item{overwrite}{is a boolean indicating if we should overwrite the file if already exists. By default is FALSE.
-
-export}
+\item{overwrite}{is a boolean indicating if we should overwrite the file if already exists. By default is FALSE.}
 }
 \description{
 This function allow you to sync pushing a local git file TO databricks

@@ -7,9 +7,7 @@
 dbgit_init(wksp_folder)
 }
 \arguments{
-\item{wksp_folder}{indicates the absolute location of databricks workspace e.g. /Users/some@email.com for pointing to a home folder
-
-export}
+\item{wksp_folder}{indicates the absolute location of databricks workspace e.g. /Users/some@email.com for pointing to a home folder}
 }
 \description{
 This function allow to configure a folder to be used as sync repository with databricks

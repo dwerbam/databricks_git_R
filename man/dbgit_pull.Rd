@@ -9,6 +9,3 @@ dbgit_pull()
 \description{
 This function allow you to sync pulling a folder FROM databricks TO local git folder
 }
-\details{
-export
-}
