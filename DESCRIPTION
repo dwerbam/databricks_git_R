@@ -9,4 +9,4 @@ Description: uses git and databricks-cli as an improved way of version
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.1.0), processx, fs, utils, shiny, miniUI
+Depends: R (>= 3.1.0), processx, fs, utils, dplyr

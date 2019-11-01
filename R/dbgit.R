@@ -5,13 +5,23 @@
 library(processx)
 library(fs)
 library(utils)
-library(shiny)
-library(miniUI)
+library(dplyr)
 
 dbgit_wksp_file <- ".databricks"
 
+remove_empty <- function(x) return( x[x!="" ])
+runit <- function(cmd, args) {
+    return(
+        run(cmd,
+            args = remove_empty(args),
+            spinner = T,
+            echo = T,
+            echo_cmd = T
+        ))
+}
+
 cli_install <- function() {
-    run("pip", args=c("install", "--upgrade", "databricks-cli"))
+    runit("pip", args=c("install", "--upgrade", "databricks-cli"))
 
     cfgpath=file.path(Sys.getenv("HOME"),'.databrickscfg')
     if(!file.exists(cfgpath)) stop(paste('Cannot find databricks configuration file in ', cfgpath))
@@ -50,6 +60,8 @@ get_env <- function() {
     ))
 }
 
+pjoin <- function(...) return(gsub('//', '/', file.path(...)))
+
 #' Initialize dbgit reposiory
 #'
 #' This function allow to configure a folder to be used as sync repository with databricks
@@ -64,10 +76,10 @@ dbgit_init <- function(wksp_folder) {
     gitpath=file.path(Sys.getenv("HOME"),'.gitconfig')
     if(!file.exists(gitpath)) stop(paste('Cannot find GIT configuration file in ', gitpath))
 
-    out <- run("git", args = c("init"))
+    out <- runit("git", args = c("init"))
     write(wksp_folder, dbgit_wksp_file)
-    out <- run("git", args = c("add", dbgit_wksp_file))
-    out <- run("git", args = c("commit", "-m", "'initial commit'"))
+    out <- runit("git", args = c("add", dbgit_wksp_file))
+    out <- runit("git", args = c("commit", "-m", "'initial commit'"))
     print(paste("dbgit_init executed for workspace location",wksp_folder))
 }
 
@@ -106,22 +118,78 @@ dbgit_init_ui <- function() {
 dbgit_pull <- function() {
     cli_install()
     env <- get_env()
-    out <- run("git", args = c("status" ,"--porcelain"), echo = T, echo_cmd = T)
+    out <- runit("git", args = c("status" ,"--porcelain"))
     if(nchar(out$stdout)>0) {
         stop("Local changes found! Please commit or stash the files first to avoid losing data.")
     }
 
-    out <- run("databricks",
+    out <- runit("databricks",
                args = c("workspace" ,
                         "export_dir",
                         "-o",
                         file.path(env$dbbase, env$relfolder),
                         file.path(env$base, env$relfolder)
-               ),
-               spinner = T,
-               echo = T,
-               echo_cmd = T
+               ))
+
+}
+
+#' Push a directory to databricks
+#'
+#' This function allow you to sync pushing a local git folder TO databricks
+#'
+#' export
+#'
+dbgit_push <- function(overwrite=FALSE) {
+    cli_install()
+    env <- get_env()
+    print("Pushing directory to databricks..")
+
+    writemode=ifelse(overwrite, "-o", "")
+    out <- runit("databricks",
+               args = c("workspace" ,
+                        "import_dir",
+                        writemode,
+                        "-e",
+                        file.path(env$base, env$relfolder),
+                        file.path(env$dbbase, env$relfolder)
+               ))
+
+}
+
+#' Push a file to databricks
+#'
+#' This function allow you to sync pushing a local git file TO databricks
+#'
+#' export
+#'
+dbgit_pushfile <- function(filename, overwrite=FALSE) {
+    cli_install()
+    env <- get_env()
+    print("Pushing file to databricks..")
+    writemode=ifelse(overwrite, "-o", "")
+
+    fileonly <- path_ext_remove(filename)
+    lowerfile <- tolower(filename)
+    language = case_when(
+        endsWith(lowerfile, ".py") ~ "PYTHON",
+        endsWith(lowerfile, ".scala") ~ "SCALA",
+        endsWith(lowerfile, ".r") ~ "R",
+        endsWith(lowerfile, ".sql") ~ "SQL",
+        TRUE ~ "unknown"
     )
+
+    print(env)
+    out <- runit("databricks",
+               args = remove_empty(
+                   c("workspace" ,
+                        "import",
+                        "-l",
+                        language,
+                        writemode,
+                        pjoin(env$base, env$relfolder, filename),
+                        pjoin(env$dbbase, env$relfolder, fileonly))
+
+               ))
 
 }
 
