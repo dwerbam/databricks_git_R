@@ -70,8 +70,8 @@ pjoin <- function(...) return(gsub('//', '/', file.path(...)))
 #'
 #' export
 
-dbgit_init <- function(wksp_folder="") {
-    if(wksp_folder=="") wksp_folder <- readline("Please, enter databricks workspace folder:")
+dbgit_init <- function(wksp_folder) {
+    if(missing(wksp_folder)) wksp_folder <- readline("Please, enter databricks workspace folder:")
     print(wksp_folder)
 
     gitpath=file.path(Sys.getenv("HOME"),'.gitconfig')
@@ -113,6 +113,7 @@ dbgit_pull <- function() {
 #'
 #' This function allow you to sync pushing a local git folder TO databricks
 #'
+#' @param overwrite is a boolean indicating if we should overwrite the file if already exists. By default is FALSE.
 #' export
 #'
 dbgit_push <- function(overwrite=FALSE) {
@@ -135,6 +136,8 @@ dbgit_push <- function(overwrite=FALSE) {
 #' Push a file to databricks
 #'
 #' This function allow you to sync pushing a local git file TO databricks
+#' @param filename indicating the filename to upload to databricks.
+#' @param overwrite is a boolean indicating if we should overwrite the file if already exists. By default is FALSE.
 #'
 #' export
 #'

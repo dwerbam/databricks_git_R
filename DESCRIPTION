@@ -10,3 +10,4 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.1.0), processx, fs, utils, dplyr
+RoxygenNote: 6.1.1
