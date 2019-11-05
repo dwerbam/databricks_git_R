@@ -23,6 +23,10 @@ runit <- function(cmd, args) {
 cli_install <- function() {
     runit("pip", args=c("install", "--upgrade", "databricks-cli"))
 
+    # get config from files root home to Documents
+    file.copy(file.path(Sys.getenv("HOME"),"..",".databrickscfg"), file.path(Sys.getenv("HOME"),".databrickscfg"), overwrite = T)
+    file.copy(file.path(Sys.getenv("HOME"),"..",".gitconfig"), file.path(Sys.getenv("HOME"),".gitconfig"), overwrite = T)
+
     cfgpath=file.path(Sys.getenv("HOME"),'.databrickscfg')
     if(!file.exists(cfgpath)) stop(paste('Cannot find databricks configuration file in ', cfgpath))
 
@@ -71,6 +75,8 @@ pjoin <- function(...) return(gsub('//', '/', file.path(...)))
 #' @export
 
 dbgit_init <- function(wksp_folder) {
+    cli_install()
+
     if(missing(wksp_folder)) wksp_folder <- readline("Please, enter databricks workspace folder:")
     print(wksp_folder)
 
